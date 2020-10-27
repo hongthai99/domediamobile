@@ -4,7 +4,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 // import {createStackNavigator} from 'react-navigation-stack'
 import SignupScreen from '../screens/SignUpScreen';
 import LoginScreen from '../screens/LoginScreen';
-import Home from '../screens/Home';
+
+import MainTabScreen from '../screens/MainTabScreen';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -35,7 +36,6 @@ const AuthStack = () => {
 
     return (
         <Stack.Navigator initialRouteName={routeName}>
-            
             <Stack.Screen
                 name = "Login"
                 component={LoginScreen}
@@ -47,7 +47,7 @@ const AuthStack = () => {
             />
             <Stack.Screen 
                 name = "HomeScreen"
-                component={Home}
+                component={MainTabScreen}
                 options={{header:()=> null}}
             />
         </Stack.Navigator>

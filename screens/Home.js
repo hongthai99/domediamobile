@@ -20,7 +20,7 @@ export default class HomeScreen extends React.Component {
                         source={require('../assets/j.jpg')}
                         style={styles.userImg}/>
                         <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeee</Text>
+                            <Text style={styles.userName}> Beeeeeeei</Text>
                         </View>
                     </View>
                     <View style={styles.postText}>
@@ -62,13 +62,14 @@ export default class HomeScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                
                 <View style={styles.card}>
                     <View style={styles.userInfo}>
                         <Image
                         source={require('../assets/j.jpg')}
                         style={styles.userImg}/>
                         <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeee</Text>
+                            <Text style={styles.userName}> Beeeeeeei</Text>
                         </View>
                     </View>
                     <View style={styles.postText}>
@@ -110,13 +111,14 @@ export default class HomeScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+
                 <View style={styles.card}>
                     <View style={styles.userInfo}>
                         <Image
                         source={require('../assets/j.jpg')}
                         style={styles.userImg}/>
                         <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeee</Text>
+                            <Text style={styles.userName}> Beeeeeeei</Text>
                         </View>
                     </View>
                     <View style={styles.postText}>
