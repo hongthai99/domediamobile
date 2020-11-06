@@ -7,10 +7,11 @@ import {
   Image,
   StyleSheet,
   Text,
+  TextInput
 } from 'react-native'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default class HomeScreen extends React.Component {
-    render(){
+const HomeScreen = () => {
         return(
             <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
@@ -30,6 +31,9 @@ export default class HomeScreen extends React.Component {
                         <Image
                         style={styles.postImg}
                         source={require('../assets/m.jpg')}/>
+                        <View style={styles.dm}>
+                            <MaterialCommunityIcons name="delete-empty-outline" size={18} color="#000"/>
+                        </View>
                     </View>
                     <View style={styles.Interaction}>
                         <View style={styles.like}>
@@ -43,127 +47,19 @@ export default class HomeScreen extends React.Component {
                         <View >
                             <Text style={styles.commentPeople}>Be33</Text>
                         </View>
-                        <View >
+                        <View>
                             <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
                         </View>
                         <View>
                             <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>Dep zo</Text>
                         </View>
+                        
                     </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Beeeeeee</Text>
-                        </View>
-                        <View >
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>iuuuuuuuuuuuuuuuuuuuuuuuuuu</Text>
-                        </View>
-                    </View>
-                </View>
-                
-                <View style={styles.card}>
-                    <View style={styles.userInfo}>
-                        <Image
-                        source={require('../assets/j.jpg')}
-                        style={styles.userImg}/>
-                        <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeeei</Text>
-                        </View>
-                    </View>
-                    <View style={styles.postText}>
-                        <Text> Hí anh em </Text> 
-                    </View>
-                    <View>
-                        <Image
-                        style={styles.postImg}
-                        source={require('../assets/m.jpg')}/>
-                    </View>
-                    <View style={styles.Interaction}>
-                        <View style={styles.like}>
-                            <Text>Like</Text>
-                        </View>
-                        <View style={styles.like}>
-                            <Text>Comment</Text>
-                        </View>
-                    </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Be33</Text>
-                        </View>
-                        <View >
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>Dep zo</Text>
-                        </View>
-                    </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Beeeeeee</Text>
-                        </View>
-                        <View >
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>iuuuuuuuuuuuuuuuuuuuuuuuuuu</Text>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.card}>
-                    <View style={styles.userInfo}>
-                        <Image
-                        source={require('../assets/j.jpg')}
-                        style={styles.userImg}/>
-                        <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeeei</Text>
-                        </View>
-                    </View>
-                    <View style={styles.postText}>
-                        <Text> Hí anh em </Text> 
-                    </View>
-                    <View>
-                        <Image
-                        style={styles.postImg}
-                        source={require('../assets/m.jpg')}/>
-                    </View>
-                    <View style={styles.Interaction}>
-                        <View style={styles.like}>
-                            <Text>Like</Text>
-                        </View>
-                        <View style={styles.like}>
-                            <Text>Comment</Text>
-                        </View>
-                    </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Be33</Text>
-                        </View>
-                        <View >
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>Dep zo</Text>
-                        </View>
-                    </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Beeeeeee</Text>
-                        </View>
-                        <View >
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>iuuuuuuuuuuuuuuuuuuuuuuuuuu</Text>
-                        </View>
-                    </View>
+                    <TextInput style={styles.commentInput} placeholder="Comment"/>
                 </View>
                 </ScrollView>
                 </SafeAreaView>
         )
-    }
 }
 
 const styles = StyleSheet.create({
@@ -225,5 +121,23 @@ const styles = StyleSheet.create({
         fontSize:15,
         marginLeft: 15,
         marginBottom: 15
+    },
+    dm: {
+        backgroundColor: "red",
+        position: "absolute",
+        top: 22,
+        right:10,
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    commentInput:{
+        height:40,
+        fontSize:15,
+        color:"#000",
+        marginLeft: 15,
     }
 });
+export default HomeScreen;

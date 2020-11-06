@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 // import { NavigationContainer } from '@react-navigation/native';
 // import {createStackNavigator} from 'react-navigation-stack'
@@ -34,7 +34,9 @@ const AuthStack = () => {
         routeName = 'HomeScreen';
     }
 
+    // const isLoggedIn = true;
     return (
+        
         <Stack.Navigator initialRouteName={routeName}>
             <Stack.Screen
                 name = "Login"
@@ -50,7 +52,29 @@ const AuthStack = () => {
                 component={MainTabScreen}
                 options={{header:()=> null}}
             />
-        </Stack.Navigator>
+        </Stack.Navigator>  
+    //   <Stack.Navigator>
+    //     {isLoggedIn ? (
+    //       <>
+    //         <Stack.Screen
+    //           name = "Login"
+    //           component={LoginScreen}
+    //           options={{header:() => null}}
+    //         />
+    //         <Stack.Screen
+    //           name="SignUp"
+    //           component={SignupScreen}
+    //         />
+    //       </>
+    //     ) : (
+    //       <Stack.Screen
+    //       name = "HomeScreen"
+    //       component={MainTabScreen}
+    //       options={{header:()=> null}}
+    //       />
+    //     )}
+    //   </Stack.Navigator>
+
     )
 }
 

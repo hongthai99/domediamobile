@@ -1,90 +1,201 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import {
   View,
   Button,
   TextInput,
   StyleSheet,
   Text,
+  TouchableOpacity,
+  Input,
+  Alert
 } from 'react-native'
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default class SignUp extends React.Component {
-  // state = {
-  //   username: '', password: '', email: '', phone_number: ''
-  // }
-  // onChangeText = (key, val) => {
-  //   this.setState({ [key]: val })
-  // }
-  // signUp = async () => {
-  //   const { username, password, email, phone_number } = this.state
-  //   try {
-  //     // here place your signup logic
-  //     console.log('user successfully signed up!: ', success)
-  //   } catch (err) {
-  //     console.log('error signing up: ', err)
-  //   }
-  // }
- 
-  render() {
-    return (
-      <View style={{...styles.container}}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder='USERNAME'
-          autoCapitalize="none"
-          placeholderTextColor='black'
-          
-        //   placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('username', val)}
-        />
-        <TextInput
-          style={styles.TextInput}
-          placeholder='EMAIL'
-          secureTextEntry={true}
-          autoCapitalize="none"
-        //   placeholderTextColor='white'
-          placeholderTextColor='black'
-          onChangeText={val => this.onChangeText('password', val)}
-        />
-        <TextInput
-          style={styles.TextInput}
-          placeholder='PASSWORD'
-          autoCapitalize="none"
-        //   placeholderTextColor='white'
-          placeholderTextColor='black'
-          onChangeText={val => this.onChangeText('email', val)}
-        />
-        <View style={styles.button}>
-            <Text style={{fontSize: 15, fontWeight:'bold'}}> 
-                    SIGN UP
-                </Text>
-        </View>
-        
-      </View>
-    )
+const SignUpScreen = ({navigation}) => {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [image, setImage] = useState("")
+  const [url , setUrl] = useState(undefined)
+
+  useEffect(() => {
+    if(url){
+        uploadField()
+    }
+  },[url])
+  //api cloudinary cấp 
+  const uploadPhotoProfile = () => {
+    const data = new FormData()
+    data.append("file", image)
+    data.append("upload_preset", "dom-clone")
+    data.append("cloud_name", "DOMedia")
+    fetch("https://api.cloudinary.com/v1_1/domedia/image/upload/",{
+      method:"post",
+      body:data
+    })
+    .then(res=>res.json())
+    .then(data => {
+        setUrl(data.url)
+  })
+  .catch(err=>{
+      console.log(err)
+  })
+  }
+  // api post method
+const uploadField = () => {
+  fetch("https://domedia-api.herokuapp.com/register",{
+      method: "post",
+      headers:{
+          "Content-Type": "application/json"
+      },
+      // use JSON to define it
+      body:JSON.stringify({
+          name,
+          password,
+          email,
+          pic:url
+      })
+  }).then(res => res.json())
+  //And here I can console to log data logs and I will go on this post then use double click on this button
+  // get data if else condition like this.
+  .then( data => {
+      if(data.error){
+          Alert.alert(data.error)
+      }
+      else{
+          Alert.alert(data.message)
+          navigation.navigate('Login')
+      }
+  }).catch(err => {
+      console.log(err)
+  })
+}
+const PostRegister = () => {
+  if(image){
+      uploadPhotoProfile()
+  }else{
+      uploadField()
   }
 }
 
-const styles = StyleSheet.create({
-    TextInput:{
-        height:50,
-        borderRadius:30,
-        borderWidth:1,
-        marginHorizontal:45,
-        paddingLeft:20,
-        marginVertical:5,
-        borderColor: '#D9D9D6',
-        backgroundColor:'white'
-    },
-    button:{
-        backgroundColor:'white',
-        height:60,
-        marginHorizontal: 45,
-        borderRadius: 30,
-        alignItems:'center',
-        justifyContent:'center',
-        marginVertical:5,
-        shadowOffset:{width: 2, height:2},
-        shadowColor:'black',
-        shadowOpacity: 0.2
+// cụm này của expo image picker 
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    setImage(result.uri);
   }
+};
+
+console.log(name, email, password,url)
+//beri@domedia.com 123456
+  return(
+      <View style={styles.container}>
+          <Text style={styles.logo}>REGISTER</Text>
+            <View style={{...styles.inputView, width:250, marginLeft:50}}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Name..." 
+                placeholderTextColor="#003f5c"
+                onChangeText={name => setName(name)}
+                value={name}
+              />
+            </View>
+            <View style={styles.dm}>
+              <TouchableOpacity onPress={()=>pickImage()}>
+                <MaterialCommunityIcons name="account" size={18}/>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.inputView} >
+              <TextInput  
+                style={styles.inputText}
+                placeholder="Email..."
+                placeholderTextColor="#003f5c"
+                onChangeText={email => setEmail(email)}
+                value={email}
+                />
+            </View>
+            <View style={styles.inputView}>
+              <TextInput  
+                secureTextEntry
+                style={styles.inputText}
+                placeholder="Password..."
+                placeholderTextColor="#003f5c"
+                onChangeText={password => setPassword(password)}
+                value={password}
+                />
+            </View>
+            <TouchableOpacity>
+              <Text style={styles.forgot} onPress={() => navigation.navigate('Login')}>Do you have a account ?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.loginBtn }>
+              <Text style={styles.loginText} onPress={() => PostRegister()} >REGISTER</Text>
+            </TouchableOpacity>
+      </View>
+  )
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // backgroundColor: '#003f5c',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo:{
+    fontWeight:"bold",
+    fontSize:20,
+    color:"#000",
+    marginBottom:25
+  },
+  inputView:{
+    width:"80%",
+    backgroundColor:"#D3D3D3",
+    borderRadius:15,
+    height:50,
+    marginBottom:20,
+    justifyContent:"center",
+    padding:20
+  },
+  inputText:{
+    height:50,
+    color:"#000"
+  },
+  forgot:{
+    color:"#000",
+    fontSize:11
+  },
+  loginBtn:{
+    width:"80%",
+    backgroundColor:"#fb5",
+    borderRadius:15,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:40,
+    marginBottom:10
+  },
+  loginText:{
+    color:"#000"
+  },
+  dm: {
+    backgroundColor:"red",
+    position: "absolute",
+    top:226,
+    left:36,
+    width: 50,
+    height: 50,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center"
+  },
 });
+export default SignUpScreen;
