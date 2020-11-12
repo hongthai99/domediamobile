@@ -7,7 +7,8 @@ import {
   Image,
   StyleSheet,
   Text,
-  TextInput
+  TextInput,
+  FlatList
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -48,7 +49,73 @@ const HomeScreen = () => {
             fetchMyAPI()
           }, [])
        
-        
+          const deletePost = (postid) => {
+            fetch(`https://domedia-api.herokuapp.com/deletepost/${postid}`,{
+                method:"delete",
+                headers:{
+                    "Authorization": "" + JSON.parse(token).token
+                }
+            }).then(res => res.json())
+            .then(result => {
+                console.log(result)
+                const newdata = data.filter(item => {
+                    return item._id !== result._id
+                })
+                setData(newdata)
+            })
+        }
+        const likePost = (id) => {
+            fetch('https://domedia-api.herokuapp.com/like', {
+                method: "put",
+                headers:{
+                    "Content-Type":"application/json", 
+                    "Authorization": "" + JSON.parse(token).token
+                },
+                body:JSON.stringify({
+                    postId:id
+                })
+            }).then(res => res.json())
+            .then(result => {
+                //console.log(result)
+                const newData = data.map(item => {
+                    if(item._id == result._id){
+                        return result
+                    }else{
+                        return item
+                    }
+                })
+                setData(newData)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    
+        const unlikePost = (id) => {
+            fetch('https://domedia-api.herokuapp.com/unlike', {
+                method: "put",
+                headers:{
+                    "Content-Type":"application/json", 
+                    "Authorization": "" + JSON.parse(token).token
+                },
+                body:JSON.stringify({
+                    postId:id
+                })
+            }).then(res => res.json())
+            .then(result => {
+               // console.log(result)
+                const newData = data.map(item => {
+                    if(item._id == result._id){
+                        return result
+                    }else{
+                        return item
+                    }
+                })
+                setData(newData)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    
          // const tokenUser = AsyncStorage.getItem("jwt")
         // console.log(tokenUser, "token Home")
         // try {const userData = await AsyncStorage.getItem('jwt')
@@ -56,54 +123,84 @@ const HomeScreen = () => {
         // }catch(err){
         //     console.log(err)}
         //beri1@domedia.com
-        // console.log(data)
+
         return(
             <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
-                {/* data.map(item => {}) */}
-                <View style={styles.card} >
+                { data.map(item => (
+                    <View style={styles.card} key={item._id}>
                     <View style={styles.userInfo}>
                         <Image
-                        // source={{}}
                         source={require('../assets/j.jpg')}
                         style={styles.userImg} />
                         <View style={styles.userInfoText}>
-                            <Text style={styles.userName}>ddd</Text>
+                            <Text style={styles.userName}>{item.postedBy.name}</Text>
                         </View>
                     </View>
                     <View style={styles.postText}>
-                        <Text> Hí anh em </Text> 
+                        <Text>{item.title}</Text> 
                     </View>
                     <View>
                         <Image
                         style={styles.postImg}
-                        source={require('../assets/m.jpg')}/>
-                        <View style={styles.dm}>
-                            <MaterialCommunityIcons name="delete-empty-outline" size={18} color="#000"/>
+                        source={{uri: item.picture}}/>
+                        {
+                            item.postedBy._id == state._id && 
+                            <View style={styles.dm}>
+                            <MaterialCommunityIcons name="delete-empty-outline" size={18} color="#000"
+                                                    onPress={() => deletePost(item._id)}/>
                         </View>
+                        }
                     </View>
                     <View style={styles.Interaction}>
-                        <View style={styles.like}>
-                            <Text>Like</Text>
-                        </View>
-                        <View style={styles.like}>
-                            <Text>Comment</Text>
-                        </View>
-                    </View>
-                    <View style={styles.commentZone}>
-                        <View >
-                            <Text style={styles.commentPeople}>Be33</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
-                        </View>
-                        <View>
-                            <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>Dep zo</Text>
-                        </View>
+                        {
+                            item.likes.includes(state._id)
+                            ?
+                            <View style={styles.like}>
+                                <Text onPress={()=>{unlikePost(item._id)}}>{item.likes.length} Like</Text>
+                            </View>
+                            : 
+                            <View style={{...styles.like, color:"red"}}>
+                                <Text onPress={()=>{likePost(item._id)}}>{item.likes.length} Like</Text>
+                            </View>
+                        }
                         
+                        <View style={styles.like}>
+                            <Text>{item.comments.length} Comment</Text>
+                        </View>
                     </View>
-                    <TextInput style={styles.commentInput} placeholder="Comment"/>
-                </View>
+                    
+                    {
+                        item.comments.map(record => {
+                            return(
+                                <View style={styles.commentZone} key={record._id}>
+                                   <View >
+                                      <Text style={styles.commentPeople}>{record.postedBy.name}</Text>
+                                   </View>
+                                   <View>
+                                      <Text style={{...styles.commentPeople, marginLeft:2}}>:</Text>
+                                   </View>
+                                   <View>
+                                      <Text style={{...styles.commentPeople, fontWeight:null,marginLeft:2}}>{record.text}</Text>
+                                   </View>
+                                </View>
+                            )
+                        })
+                    }
+                    <TextInput style={styles.commentInput} placeholder="Comment"
+                               onSubmit={(e) => {
+                                e.preventDefault()
+                                makeComment(e.target[0].value, item._id)
+                               }}
+                    />
+                </View> 
+                ))
+                }
+                {/* <FlatList data={data}
+                renderItem={RenderDataListView}
+                key={item._id}
+                keyExtractor={item => item._id}
+                /> */}
                 </ScrollView>
                 </SafeAreaView>
         )
