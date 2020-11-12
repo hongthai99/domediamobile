@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect,useContext} from 'react'
 import {
   View,
   Button,
@@ -10,7 +10,7 @@ import {
   Alert
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
+// import Constants from 'expo-constants';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SignUpScreen = ({navigation}) => {
@@ -18,15 +18,15 @@ const SignUpScreen = ({navigation}) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [image, setImage] = useState("")
-  const [url , setUrl] = useState(undefined)
+  // const [url , setUrl] = useState(undefined)
 
-  useEffect(() => {
-    if(url){
-        uploadField()
-    }
-  },[url])
+  // useEffect(() => {
+  //   if(url){
+  //       uploadField()
+  //   }
+  // },[url])
   //api cloudinary cấp 
-  const uploadPhotoProfile = () => {
+  const uploadPhotoProfile = (image) => {
     const data = new FormData()
     data.append("file", image)
     data.append("upload_preset", "dom-clone")
@@ -37,7 +37,9 @@ const SignUpScreen = ({navigation}) => {
     })
     .then(res=>res.json())
     .then(data => {
-        setUrl(data.url)
+        setImage(data.url)
+        // setModal(false)
+        console.log(data)
   })
   .catch(err=>{
       console.log(err)
@@ -55,7 +57,8 @@ const uploadField = () => {
           name,
           password,
           email,
-          pic:url
+          // pic:url
+          pic:image
       })
   }).then(res => res.json())
   //And here I can console to log data logs and I will go on this post then use double click on this button
@@ -72,32 +75,41 @@ const uploadField = () => {
       console.log(err)
   })
 }
-const PostRegister = () => {
-  if(image){
-      uploadPhotoProfile()
-  }else{
-      uploadField()
-  }
-}
+// const PostRegister = () => {
+//   if(image){
+//       uploadPhotoProfile()
+//   }else{
+//       uploadField()
+//   }
+// }
 
 // cụm này của expo image picker 
 const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
+  let data = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
+    aspect: [1,1],
+    quality: 0.5,
   });
 
-  console.log(result);
+  console.log(data);
 
-  if (!result.cancelled) {
-    setImage(result.uri);
+  if (!data.cancelled) {
+    // setImage(data.uri);
+    // // value(image)
+    // // console.log(uri,'After set URI')
+    let newfile = { 
+      uri:data.uri,
+      type:`test/${data.uri.split(".")[1]}`,
+      name:`test.${data.uri.split(".")[1]}` 
+
+  }
+    uploadPhotoProfile(newfile)
   }
 };
 
-console.log(name, email, password,url)
-//beri@domedia.com 123456
+console.log(name, email, password,image)
+//beri1@domedia.com 123456
   return(
       <View style={styles.container}>
           <Text style={styles.logo}>REGISTER</Text>
@@ -138,7 +150,10 @@ console.log(name, email, password,url)
               <Text style={styles.forgot} onPress={() => navigation.navigate('Login')}>Do you have a account ?</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginBtn }>
-              <Text style={styles.loginText} onPress={() => PostRegister()} >REGISTER</Text>
+              <Text style={styles.loginText} 
+              // onPress={() => PostRegister()}
+              onPress={() => uploadField()} 
+              >REGISTER</Text>
             </TouchableOpacity>
       </View>
   )

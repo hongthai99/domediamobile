@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState, useEffect, useContext} from 'react'
 import Constants from 'expo-constants';
 import {
   SafeAreaView, 
@@ -10,18 +10,65 @@ import {
   TextInput
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-community/async-storage';
+import {UserContext} from '../navigation/Routes'
 
 const HomeScreen = () => {
+        const [data, setData] = useState([])
+        const {state, dispatch} = useContext(UserContext)
+        // useEffect(()=>{
+        //     fetch('https://domedia-api.herokuapp.com/newsfeed',{
+        //         headers:{
+        //             "Authorization": "" + AsyncStorage.getItem("jwt")
+        //         }
+                
+        //     }).then(res=>res.json())
+        //     .then(result => {
+        //         console.log(result)
+        //         setData(result.posts)
+        //     })
+        // },[])
+        useEffect(() => {
+            async function fetchMyAPI() {
+                try{
+                    const token = await AsyncStorage.getItem('jwt')
+                    //console.log(JSON.parse(token).token)
+                    let result = await fetch('https://domedia-api.herokuapp.com/newsfeed',{
+                        headers:{
+                            "Authorization": "" + JSON.parse(token).token
+                        }
+                      
+                    }).then(res=>res.json())
+                    // console.log(result)
+                    setData(result.posts)
+                }catch(err){
+                    console.log(err)
+                }
+            }
+            fetchMyAPI()
+          }, [])
+       
+        
+         // const tokenUser = AsyncStorage.getItem("jwt")
+        // console.log(tokenUser, "token Home")
+        // try {const userData = await AsyncStorage.getItem('jwt')
+        //     console.log(userData);
+        // }catch(err){
+        //     console.log(err)}
+        //beri1@domedia.com
+        // console.log(data)
         return(
             <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
-                <View style={styles.card}>
+                {/* data.map(item => {}) */}
+                <View style={styles.card} >
                     <View style={styles.userInfo}>
                         <Image
+                        // source={{}}
                         source={require('../assets/j.jpg')}
-                        style={styles.userImg}/>
+                        style={styles.userImg} />
                         <View style={styles.userInfoText}>
-                            <Text style={styles.userName}> Beeeeeeei</Text>
+                            <Text style={styles.userName}>ddd</Text>
                         </View>
                     </View>
                     <View style={styles.postText}>

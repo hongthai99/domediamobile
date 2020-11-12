@@ -1,20 +1,37 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useReducer} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 // import { NavigationContainer } from '@react-navigation/native';
 // import {createStackNavigator} from 'react-navigation-stack'
 import SignupScreen from '../screens/SignUpScreen';
 import LoginScreen from '../screens/LoginScreen';
-
 import MainTabScreen from '../screens/MainTabScreen';
-
 import AsyncStorage from '@react-native-community/async-storage';
-
+// get user
+// import {UserContext} from '../App'
+//
+// Hí cô chỗ này là navigation :PPPP 
 const Stack = createStackNavigator();
+// import {UserContext} from './Routes';
+// hicoo@domedia.com
+// Hí cô em chưa làm cái profile page cô ạ.. :PPPPP 
+// api hơi chậm nữa cô :P 
+// chắc do em sài free của heroku với môngo chận rè à cô ơi.... :PPPPP 
+
 
 const AuthStack = () => {
     const [isFirstLaunch, setIsFirstLaunch] = useState(null);
     let routeName;
+    // const {state, dispatch} = useContext(UserContext)
 
+    // useEffect(() => {
+    //     const user = JSON.parse(AsyncStorage.getItem("user"))
+    //     if(user){
+    //       dispatch({type:"USER", payload:user})
+    //       //history.push('/')
+    //     }else{
+    //       navigation.navigate('Login')
+    //     }
+    //     },[])
     useEffect(() => {
         AsyncStorage.getItem('alreadyLaunched').then((value) => {
             if (value == null){
@@ -33,11 +50,11 @@ const AuthStack = () => {
     } else {
         routeName = 'HomeScreen';
     }
-
+   
+        
     // const isLoggedIn = true;
     return (
-        
-        <Stack.Navigator initialRouteName={routeName}>
+        <Stack.Navigator initialRouteName={routeName} >
             <Stack.Screen
                 name = "Login"
                 component={LoginScreen}
